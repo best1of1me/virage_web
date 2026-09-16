@@ -1,0 +1,19 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Virage Web (Chrome)",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "chrome",
+            "args": [
+                "--web-port=8080"
+            ]
+        },
+        {
+            "name": "Virage Mobile/Desktop",
+            "request": "launch",
+            "type": "dart"
+        }
+    ]
+}
