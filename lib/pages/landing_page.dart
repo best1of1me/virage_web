@@ -40,10 +40,10 @@ class _LandingPageState extends State<LandingPage> {
     }
   }
 
-  /// توليد رابط العودة ديناميكياً بناءً على أصل الصفحة الحالية (يعمل في الإنتاج).
+  /// توليد رابط العودة ديناميكياً بناءً على عنوان الصفحة الحالية (يعمل في الإنتاج).
   String get _oauthRedirectUrl {
-    final origin = web.window.location.origin;
-    if (origin.isNotEmpty) return '$origin/#/dashboard';
+    final href = web.window.location.href;
+    if (href.isNotEmpty) return '${href.split('#').first}#/dashboard';
     return 'http://localhost:8080/#/dashboard';
   }
 
