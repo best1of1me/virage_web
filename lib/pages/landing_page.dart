@@ -114,15 +114,19 @@ class _NavBar extends StatelessWidget {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(8),
+                width: 40,
+                height: 40,
+                padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: colorScheme.primary,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Icon(
-                  Icons.qr_code_2_rounded,
                   color: Colors.white,
-                  size: 24,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: colorScheme.primary.withValues(alpha: 0.25),
+                  ),
+                ),
+                child: Image.asset(
+                  'assets/images/logo.png',
+                  fit: BoxFit.contain,
                 ),
               ),
               const SizedBox(width: 12),
@@ -239,6 +243,28 @@ class _HeroSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          // شعار التطبيق الرسمي
+          Container(
+            width: 108,
+            height: 108,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.18),
+                  blurRadius: 28,
+                  offset: const Offset(0, 10),
+                ),
+              ],
+            ),
+            child: Image.asset(
+              'assets/images/logo.png',
+              fit: BoxFit.contain,
+            ),
+          ),
+          const SizedBox(height: 28),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
             decoration: BoxDecoration(
@@ -381,10 +407,10 @@ class _StatsBar extends StatelessWidget {
         spacing: 40,
         runSpacing: 24,
         children: [
-          _StatItem(value: '+50', label: 'مدرسة سياقة تستعمل المنصة'),
-          _StatItem(value: '+300', label: 'كود تفعيل تم توزيعه'),
-          _StatItem(value: '100%', label: 'نسبة تفعيل الأكواد الموزعة'),
-          _StatItem(value: '24/7', label: 'دعم فني متواصل'),
+          _StatItem(value: '104', label: 'إشارة مرورية'),
+          _StatItem(value: '50', label: 'سؤالاً للامتحان الشفهي'),
+          _StatItem(value: '31', label: 'سؤالاً للامتحان النظري'),
+          _StatItem(value: '5', label: 'سلاسل امتحان شفهي'),
         ],
       ),
     );
