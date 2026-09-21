@@ -3,7 +3,7 @@ class AppInfo {
   const AppInfo._();
 
   /// نسخة التطبيق الحالية — ثابت واحد يجب تحديثه عند كل إصدار.
-  static const String version = '1.0.0';
+  static const String version = '1.0.3';
 
   /// الاسم التجاري للمنصة.
   static const String name = 'Virage';
