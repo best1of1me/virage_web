@@ -209,9 +209,7 @@ class _AppHeroSection extends StatelessWidget {
           Container(
             width: 108,
             height: 108,
-            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.white,
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
@@ -221,13 +219,12 @@ class _AppHeroSection extends StatelessWidget {
                 ),
               ],
             ),
-            child: ClipOval(
-              child: Image.asset(
-                'assets/images/logo.png',
-                fit: BoxFit.contain,
-                width: double.infinity,
-                height: double.infinity,
-              ),
+            clipBehavior: Clip.antiAlias,
+            child: Image.asset(
+              'assets/images/logo.png',
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: double.infinity,
             ),
           ),
           const SizedBox(height: 28),
