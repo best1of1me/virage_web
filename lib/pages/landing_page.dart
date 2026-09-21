@@ -18,8 +18,8 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
-  final GlobalKey _featuresKey = GlobalKey();
-  final GlobalKey _partnersKey = GlobalKey();
+  final GlobalKey _schoolKey = GlobalKey();
+  final GlobalKey _traineeKey = GlobalKey();
 
   Future<void> _handleGoogleSignIn() async {
     try {
@@ -67,19 +67,25 @@ class _LandingPageState extends State<LandingPage> {
         child: Column(
           children: [
             _NavBar(
-              onFeaturesTap: () => _scrollToKey(_featuresKey),
-              onPartnersTap: () => _scrollToKey(_partnersKey),
+              onSchoolTap: () => _scrollToKey(_schoolKey),
+              onTraineeTap: () => _scrollToKey(_traineeKey),
               onLoginTap: _handleGoogleSignIn,
             ),
             _HeroSection(
               onRegisterTap: _handleGoogleSignIn,
-              onPartnerTap: () => _scrollToKey(_partnersKey),
+              onTraineeTap: () => _scrollToKey(_traineeKey),
             ),
             const _StatsBar(),
-            const _DownloadSection(),
-            Container(key: _featuresKey, child: const _FeaturesSection()),
-            const _HowItWorksSection(),
-            Container(key: _partnersKey, child: const _CallToActionSection()),
+            // مسار مدرسة السياقة
+            Container(
+              key: _schoolKey,
+              child: const _SchoolPathSection(),
+            ),
+            // المسار المخصص للمترشح
+            Container(
+              key: _traineeKey,
+              child: const _TraineePathSection(),
+            ),
             const _Footer(),
           ],
         ),
@@ -88,14 +94,85 @@ class _LandingPageState extends State<LandingPage> {
   }
 }
 
+/// رأس قسم موحّد يوضع فوق كل مسار.
+class _SectionHeader extends StatelessWidget {
+  final IconData icon;
+  final String eyebrow;
+  final String title;
+  final String subtitle;
+
+  const _SectionHeader({
+    required this.icon,
+    required this.eyebrow,
+    required this.title,
+    required this.subtitle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+          decoration: BoxDecoration(
+            color: colorScheme.primary.withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 16, color: colorScheme.primary),
+              const SizedBox(width: 8),
+              Text(
+                eyebrow,
+                style: TextStyle(
+                  color: colorScheme.primary,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 20),
+        Text(
+          title,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 30,
+            fontWeight: FontWeight.bold,
+            color: colorScheme.primary,
+          ),
+        ),
+        const SizedBox(height: 12),
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 640),
+          child: Text(
+            subtitle,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 16,
+              height: 1.6,
+              color: colorScheme.onSurface.withValues(alpha: 0.65),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class _NavBar extends StatelessWidget {
-  final VoidCallback onFeaturesTap;
-  final VoidCallback onPartnersTap;
+  final VoidCallback onSchoolTap;
+  final VoidCallback onTraineeTap;
   final VoidCallback onLoginTap;
 
   const _NavBar({
-    required this.onFeaturesTap,
-    required this.onPartnersTap,
+    required this.onSchoolTap,
+    required this.onTraineeTap,
     required this.onLoginTap,
   });
 
@@ -145,17 +222,17 @@ class _NavBar extends StatelessWidget {
             Row(
               children: [
                 TextButton(
-                  onPressed: onFeaturesTap,
+                  onPressed: onTraineeTap,
                   child: const Text(
-                    'المميزات',
+                    'المترشحون',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
-                const SizedBox(width: 20),
+                const SizedBox(width: 12),
                 TextButton(
-                  onPressed: onPartnersTap,
+                  onPressed: onSchoolTap,
                   child: const Text(
-                    'شركاؤنا',
+                    'مدارس السياقة',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -188,17 +265,20 @@ class _NavBar extends StatelessWidget {
               ),
               onSelected: (value) {
                 switch (value) {
-                  case 'features':
-                    onFeaturesTap();
-                  case 'partners':
-                    onPartnersTap();
+                  case 'trainee':
+                    onTraineeTap();
+                  case 'school':
+                    onSchoolTap();
                   case 'login':
                     onLoginTap();
                 }
               },
               itemBuilder: (context) => const [
-                PopupMenuItem(value: 'features', child: Text('المميزات')),
-                PopupMenuItem(value: 'partners', child: Text('شركاؤنا')),
+                PopupMenuItem(value: 'trainee', child: Text('المترشحون')),
+                PopupMenuItem(
+                  value: 'school',
+                  child: Text('مدارس السياقة'),
+                ),
                 PopupMenuDivider(),
                 PopupMenuItem(
                   value: 'login',
@@ -220,9 +300,12 @@ class _NavBar extends StatelessWidget {
 
 class _HeroSection extends StatelessWidget {
   final VoidCallback onRegisterTap;
-  final VoidCallback onPartnerTap;
+  final VoidCallback onTraineeTap;
 
-  const _HeroSection({required this.onRegisterTap, required this.onPartnerTap});
+  const _HeroSection({
+    required this.onRegisterTap,
+    required this.onTraineeTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -232,7 +315,7 @@ class _HeroSection extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 90),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 80),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [colorScheme.primary, colorScheme.secondary],
@@ -272,7 +355,7 @@ class _HeroSection extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
             ),
             child: const Text(
-              '🚀 منصة أكواد التفعيل الخاصة بمدارس السياقة',
+              '🚀 منصة عربية لتعليم السياقة والتحضير للامتحان',
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
@@ -282,7 +365,7 @@ class _HeroSection extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           const Text(
-            'زوّد مترشحيك بتطبيق تعلم القيادة\nبضغطة واحدة',
+            'احترف الطريق\nبينك وبين مدرستك',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 40,
@@ -295,60 +378,41 @@ class _HeroSection extends StatelessWidget {
           ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 700),
             child: Text(
-              'اشترِ أكواد تفعيل تطبيق تعلم قوانين المرور بالجملة، وزّعها على مترشحيك، وتابع من فعّل كوده وتقدّم في تحضيره للامتحان النظري — كل هذا من لوحة تحكم واحدة.',
+              'تطبيق تعليمي متكامل للمترشح، ولوحة تحكم لمدارس السياقة لتوزيع أكواد التفعيل وتتبع الاستعمال. اختر مسارك في الأسفل.',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 18,
+                fontSize: 17,
                 color: Colors.white.withValues(alpha: 0.9),
-                height: 1.5,
+                height: 1.6,
               ),
             ),
           ),
           const SizedBox(height: 44),
+          // بطاقتا اختيار المسار
           Wrap(
-            spacing: 20,
-            runSpacing: 20,
+            spacing: 24,
+            runSpacing: 24,
             alignment: WrapAlignment.center,
             children: [
-              ElevatedButton.icon(
-                onPressed: onRegisterTap,
-                icon: const Icon(Icons.business_center_rounded),
-                label: const Text('سجل مدرستك الآن عبر Google'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 36,
-                    vertical: 20,
-                  ),
-                  backgroundColor: Colors.white,
-                  foregroundColor: colorScheme.primary,
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  textStyle: const TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+              _PathCard(
+                icon: Icons.school_rounded,
+                title: 'مترشح',
+                description:
+                    'حمّل تطبيق Virage، أدخل كود التفعيل الذي استلمته من مدرستك، وابدأ التحضير للامتحان النظري بأسئلة وإشارات حقيقية.',
+                buttonLabel: 'حمّل التطبيق',
+                buttonIcon: Icons.android_rounded,
+                isPrimary: false,
+                onTap: onTraineeTap,
               ),
-              OutlinedButton(
-                onPressed: onPartnerTap,
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 36,
-                    vertical: 20,
-                  ),
-                  foregroundColor: Colors.white,
-                  side: const BorderSide(color: Colors.white, width: 2),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  textStyle: const TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                child: const Text('استكشف خيارات الشراكة'),
+              _PathCard(
+                icon: Icons.business_center_rounded,
+                title: 'مدرسة سياقة',
+                description:
+                    'سجّل مدرستك مجاناً عبر Google، اشترِ أكواد التفعيل بالجملة بأسعار تفضيلية، ووزّعها وتتبّع استعمالها من لوحة تحكم واحدة.',
+                buttonLabel: 'سجّل مدرستك عبر Google',
+                buttonIcon: Icons.login_rounded,
+                isPrimary: true,
+                onTap: onRegisterTap,
               ),
             ],
           ),
@@ -363,6 +427,113 @@ class _HeroSection extends StatelessWidget {
               _TrustBadge(text: 'تتبع فوري للاستعمال'),
             ],
           ),
+        ],
+      ),
+    );
+  }
+}
+
+/// بطاقة مسار (مترشح أو مدرسة) في قسم البطل.
+class _PathCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String description;
+  final String buttonLabel;
+  final IconData buttonIcon;
+  final bool isPrimary;
+  final VoidCallback onTap;
+
+  const _PathCard({
+    required this.icon,
+    required this.title,
+    required this.description,
+    required this.buttonLabel,
+    required this.buttonIcon,
+    required this.isPrimary,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      width: 340,
+      padding: const EdgeInsets.all(28),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.18),
+            blurRadius: 24,
+            offset: const Offset(0, 12),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: colorScheme.primary.withValues(alpha: 0.12),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, size: 36, color: colorScheme.primary),
+          ),
+          const SizedBox(height: 18),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: colorScheme.primary,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            description,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: colorScheme.onSurface.withValues(alpha: 0.7),
+              height: 1.6,
+            ),
+          ),
+          const SizedBox(height: 24),
+          if (isPrimary)
+            ElevatedButton.icon(
+              onPressed: onTap,
+              icon: Icon(buttonIcon, size: 18),
+              label: Text(buttonLabel),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: colorScheme.primary,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 16,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            )
+          else
+            OutlinedButton.icon(
+              onPressed: onTap,
+              icon: Icon(buttonIcon, size: 18),
+              label: Text(buttonLabel),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: colorScheme.primary,
+                side: BorderSide(color: colorScheme.primary, width: 1.5),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 16,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -448,141 +619,31 @@ class _StatItem extends StatelessWidget {
   }
 }
 
-/// قسم تحميل تطبيق المترشح (موجَّه للطلاب وليس المدارس).
-class _DownloadSection extends StatefulWidget {
-  const _DownloadSection();
+// ===========================================================================
+//  المسار الأول: مدرسة السياقة (بائع/موزّع الأكواد)
+// ===========================================================================
 
-  @override
-  State<_DownloadSection> createState() => _DownloadSectionState();
-}
-
-class _DownloadSectionState extends State<_DownloadSection> {
-  static const String _endpoint = String.fromEnvironment(
-    'UPDATE_ENDPOINT',
-    defaultValue: 'https://virage.app/api/latest',
-  );
-
-  String? _versionName;
-  String? _downloadUrl;
-  bool _loading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadLatest();
-  }
-
-  Future<void> _loadLatest() async {
-    try {
-      final response = await http
-          .get(Uri.parse(_endpoint))
-          .timeout(const Duration(seconds: 8));
-      if (response.statusCode != 200) return;
-      final data = jsonDecode(response.body) as Map<String, dynamic>;
-      if (!mounted) return;
-      setState(() {
-        _versionName = data['versionName']?.toString();
-        _downloadUrl = data['url']?.toString();
-        _loading = false;
-      });
-    } catch (_) {
-      if (mounted) setState(() => _loading = false);
-    }
-  }
+class _SchoolPathSection extends StatelessWidget {
+  const _SchoolPathSection();
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
-      child: Column(
-        children: [
-          Text(
-            'حمّل تطبيق Virage',
-            style: TextStyle(
-              fontSize: 32,
-              fontWeight: FontWeight.bold,
-              color: colorScheme.primary,
-            ),
+    return Column(
+      children: const [
+        Padding(
+          padding: EdgeInsets.only(top: 80, bottom: 8),
+          child: _SectionHeader(
+            icon: Icons.business_center_rounded,
+            eyebrow: 'مسار مدرسة السياقة',
+            title: 'لوحة تحكم كاملة لبيع الأكواد وتتبع المترشحين',
+            subtitle:
+                'سجّل مدرستك مجاناً عبر Google، واشترِ أكواد التفعيل بالجملة، ووزّعها على مترشحيك وتابع من فعّل كوده ومن لم يفعّله بعد.',
           ),
-          const SizedBox(height: 12),
-          Text(
-            'تطبيق التحضير للامتحان النظري لرخصة السياقة في الجزائر',
-            style: TextStyle(
-              fontSize: 16,
-              color: colorScheme.onSurface.withValues(alpha: 0.65),
-            ),
-          ),
-          const SizedBox(height: 36),
-          Container(
-            constraints: const BoxConstraints(maxWidth: 520),
-            padding: const EdgeInsets.all(32),
-            decoration: BoxDecoration(
-              color: theme.cardColor,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: colorScheme.primary.withValues(alpha: 0.25),
-              ),
-            ),
-            child: Column(
-              children: [
-                Icon(
-                  Icons.android_rounded,
-                  size: 56,
-                  color: colorScheme.primary,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  _loading
-                      ? 'جارٍ التحقق من آخر إصدار...'
-                      : _versionName != null
-                      ? 'الإصدار ${_versionName!}'
-                      : 'التطبيق متوفر للهواتف الأندرويد فقط',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: colorScheme.onSurface,
-                  ),
-                ),
-                const SizedBox(height: 24),
-                ElevatedButton.icon(
-                  onPressed: (_downloadUrl == null)
-                      ? null
-                      : () => web.window.open(_downloadUrl!, '_blank'),
-                  icon: const Icon(Icons.download_rounded),
-                  label: const Text(
-                    'تحميل التطبيق (APK)',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 36,
-                      vertical: 16,
-                    ),
-                    backgroundColor: colorScheme.primary,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                const SizedBox(
-                  width: double.infinity,
-                  child: Text(
-                    'بعد التحميل: افتح الملف من مجلد «التنزيلات»، ثم Allow التثبيت من «مصادر غير معروفة» عند طلبه، وأدخل كود التفعيل الذي استلمته من مدرستك.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 13, height: 1.6),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+        ),
+        _FeaturesSection(),
+        _HowItWorksSection(),
+        _PartnershipCta(),
+      ],
     );
   }
 }
@@ -596,26 +657,18 @@ class _FeaturesSection extends StatelessWidget {
     final colorScheme = theme.colorScheme;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 48, horizontal: 20),
       child: Column(
         children: [
           Text(
-            'لماذا تختار منصتنا؟',
+            'لماذا تختار لوحة تحكم المدرسة؟',
             style: TextStyle(
-              fontSize: 32,
+              fontSize: 26,
               fontWeight: FontWeight.bold,
               color: colorScheme.primary,
             ),
           ),
-          const SizedBox(height: 12),
-          Text(
-            'كل ما تحتاجه لتزويد مترشحيك بالتطبيق ومتابعة استعمالهم له',
-            style: TextStyle(
-              fontSize: 16,
-              color: colorScheme.onSurface.withValues(alpha: 0.65),
-            ),
-          ),
-          const SizedBox(height: 48),
+          const SizedBox(height: 40),
           const Wrap(
             spacing: 30,
             runSpacing: 30,
@@ -743,13 +796,13 @@ class _HowItWorksSection extends StatelessWidget {
       color: isDark
           ? colorScheme.surfaceContainerHighest.withValues(alpha: 0.2)
           : Colors.grey.shade50,
-      padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 20),
       child: Column(
         children: [
           Text(
             'كيف تعمل المنصة؟',
             style: TextStyle(
-              fontSize: 32,
+              fontSize: 26,
               fontWeight: FontWeight.bold,
               color: colorScheme.primary,
             ),
@@ -762,7 +815,7 @@ class _HowItWorksSection extends StatelessWidget {
               color: colorScheme.onSurface.withValues(alpha: 0.65),
             ),
           ),
-          const SizedBox(height: 48),
+          const SizedBox(height: 40),
           const Wrap(
             spacing: 30,
             runSpacing: 30,
@@ -876,8 +929,8 @@ class _StepCard extends StatelessWidget {
   }
 }
 
-class _CallToActionSection extends StatelessWidget {
-  const _CallToActionSection();
+class _PartnershipCta extends StatelessWidget {
+  const _PartnershipCta();
 
   @override
   Widget build(BuildContext context) {
@@ -890,12 +943,12 @@ class _CallToActionSection extends StatelessWidget {
       color: isDark
           ? colorScheme.surfaceContainerHighest.withValues(alpha: 0.3)
           : colorScheme.primary.withValues(alpha: 0.05),
-      padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 20),
       child: Column(
         children: [
           const Text(
             'برنامج الشراكة والأسعار الخاصة',
-            style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
           Text(
@@ -952,6 +1005,227 @@ class _CallToActionSection extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+// ===========================================================================
+//  المسار الثاني: المترشح (طالب/مستخدم التطبيق)
+// ===========================================================================
+
+class _TraineePathSection extends StatelessWidget {
+  const _TraineePathSection();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Container(
+      width: double.infinity,
+      color: isDark
+          ? colorScheme.primary.withValues(alpha: 0.08)
+          : colorScheme.primary.withValues(alpha: 0.04),
+      padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
+      child: Column(
+        children: const [
+          _SectionHeader(
+            icon: Icons.school_rounded,
+            eyebrow: 'مسار المترشح',
+            title: 'ابدأ تحضيرك للامتحان في دقيقة',
+            subtitle:
+                'حمّل تطبيق Virage مجاناً، وأدخل كود التفعيل الذي استلمته من مدرسة السياقة، واعثر على كل دروس الإشارات والأسئلة في تطبيق واحد يعمل بدون إنترنت.',
+          ),
+          SizedBox(height: 44),
+          _DownloadSection(),
+        ],
+      ),
+    );
+  }
+}
+
+/// قسم تحميل تطبيق المترشح (موجَّه للطلاب وليس المدارس).
+class _DownloadSection extends StatefulWidget {
+  const _DownloadSection();
+
+  @override
+  State<_DownloadSection> createState() => _DownloadSectionState();
+}
+
+class _DownloadSectionState extends State<_DownloadSection> {
+  static const String _endpoint = String.fromEnvironment(
+    'UPDATE_ENDPOINT',
+    defaultValue: 'https://virage.app/api/latest',
+  );
+
+  String? _versionName;
+  String? _downloadUrl;
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadLatest();
+  }
+
+  Future<void> _loadLatest() async {
+    try {
+      final response = await http
+          .get(Uri.parse(_endpoint))
+          .timeout(const Duration(seconds: 8));
+      if (response.statusCode != 200) return;
+      final data = jsonDecode(response.body) as Map<String, dynamic>;
+      if (!mounted) return;
+      setState(() {
+        _versionName = data['versionName']?.toString();
+        _downloadUrl = data['url']?.toString();
+        _loading = false;
+      });
+    } catch (_) {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final primary = colorScheme.primary;
+
+    return Container(
+      constraints: const BoxConstraints(maxWidth: 620),
+      padding: const EdgeInsets.all(32),
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: primary.withValues(alpha: 0.25)),
+      ),
+      child: Column(
+        children: [
+          Icon(Icons.android_rounded, size: 56, color: primary),
+          const SizedBox(height: 16),
+          Text(
+            _loading
+                ? 'جارٍ التحقق من آخر إصدار...'
+                : _versionName != null
+                ? 'الإصدار ${_versionName!}'
+                : 'التطبيق متوفر للهواتف الأندرويد فقط',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: colorScheme.onSurface,
+            ),
+          ),
+          const SizedBox(height: 24),
+          ElevatedButton.icon(
+            onPressed: (_downloadUrl == null)
+                ? null
+                : () => web.window.open(_downloadUrl!, '_blank'),
+            icon: const Icon(Icons.download_rounded),
+            label: const Text(
+              'تحميل التطبيق (APK)',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 16),
+              backgroundColor: primary,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+          const SizedBox(height: 28),
+          const Divider(),
+          const SizedBox(height: 4),
+          // خطوات التفعيل للمترشح
+          const _StepLine(
+            number: '1',
+            text: 'حمّل ملف APK وافتحه من مجلد «التنزيلات» على هاتفك.',
+          ),
+          const SizedBox(height: 14),
+          const _StepLine(
+            number: '2',
+            text: 'اسمح بالتثبيت من «مصادر غير معروفة» عند طلبه من النظام.',
+          ),
+          const SizedBox(height: 14),
+          const _StepLine(
+            number: '3',
+            text: 'افتح التطبيق وأدخل كود التفعيل الذي استلمته من مدرستك.',
+          ),
+          const SizedBox(height: 20),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: primary.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.help_outline_rounded, size: 20, color: primary),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    'لا تملك كوداً بعد؟ اطلبه من مدرسة السياقة التي تسجّل فيها.',
+                    style: TextStyle(fontSize: 13, color: colorScheme.onSurface),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StepLine extends StatelessWidget {
+  final String number;
+  final String text;
+
+  const _StepLine({required this.number, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 26,
+          height: 26,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: colorScheme.primary,
+            shape: BoxShape.circle,
+          ),
+          child: Text(
+            number,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 13,
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(top: 3),
+            child: Text(
+              text,
+              style: TextStyle(
+                fontSize: 14,
+                height: 1.5,
+                color: colorScheme.onSurface.withValues(alpha: 0.75),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
