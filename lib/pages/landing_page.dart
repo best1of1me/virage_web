@@ -1,9 +1,5 @@
-import 'dart:async';
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:http/http.dart' as http;
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:web/web.dart' as web;
 import '../responsive_layout.dart';
@@ -19,7 +15,6 @@ class LandingPage extends StatefulWidget {
 
 class _LandingPageState extends State<LandingPage> {
   final GlobalKey _schoolKey = GlobalKey();
-  final GlobalKey _traineeKey = GlobalKey();
 
   Future<void> _handleGoogleSignIn() async {
     try {
@@ -67,24 +62,19 @@ class _LandingPageState extends State<LandingPage> {
         child: Column(
           children: [
             _NavBar(
+              onTraineeTap: () => context.go('/app'),
               onSchoolTap: () => _scrollToKey(_schoolKey),
-              onTraineeTap: () => _scrollToKey(_traineeKey),
               onLoginTap: _handleGoogleSignIn,
             ),
             _HeroSection(
               onRegisterTap: _handleGoogleSignIn,
-              onTraineeTap: () => _scrollToKey(_traineeKey),
+              onTraineeTap: () => context.go('/app'),
             ),
             const _StatsBar(),
-            // مسار مدرسة السياقة
+            // مسار مدرسة السياقة فقط (مسار المترشح في صفحة /app).
             Container(
               key: _schoolKey,
               child: const _SchoolPathSection(),
-            ),
-            // المسار المخصص للمترشح
-            Container(
-              key: _traineeKey,
-              child: const _TraineePathSection(),
             ),
             const _Footer(),
           ],
@@ -94,85 +84,14 @@ class _LandingPageState extends State<LandingPage> {
   }
 }
 
-/// رأس قسم موحّد يوضع فوق كل مسار.
-class _SectionHeader extends StatelessWidget {
-  final IconData icon;
-  final String eyebrow;
-  final String title;
-  final String subtitle;
-
-  const _SectionHeader({
-    required this.icon,
-    required this.eyebrow,
-    required this.title,
-    required this.subtitle,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-          decoration: BoxDecoration(
-            color: colorScheme.primary.withValues(alpha: 0.12),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(icon, size: 16, color: colorScheme.primary),
-              const SizedBox(width: 8),
-              Text(
-                eyebrow,
-                style: TextStyle(
-                  color: colorScheme.primary,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 13,
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 20),
-        Text(
-          title,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 30,
-            fontWeight: FontWeight.bold,
-            color: colorScheme.primary,
-          ),
-        ),
-        const SizedBox(height: 12),
-        ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 640),
-          child: Text(
-            subtitle,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 16,
-              height: 1.6,
-              color: colorScheme.onSurface.withValues(alpha: 0.65),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
 class _NavBar extends StatelessWidget {
-  final VoidCallback onSchoolTap;
   final VoidCallback onTraineeTap;
+  final VoidCallback onSchoolTap;
   final VoidCallback onLoginTap;
 
   const _NavBar({
-    required this.onSchoolTap,
     required this.onTraineeTap,
+    required this.onSchoolTap,
     required this.onLoginTap,
   });
 
@@ -398,8 +317,8 @@ class _HeroSection extends StatelessWidget {
                 icon: Icons.school_rounded,
                 title: 'مترشح',
                 description:
-                    'حمّل تطبيق Virage، أدخل كود التفعيل الذي استلمته من مدرستك، وابدأ التحضير للامتحان النظري بأسئلة وإشارات حقيقية.',
-                buttonLabel: 'حمّل التطبيق',
+                    'اكتشف تطبيق Virage، حمّله، وأدخل كود التفعيل الذي استلمته من مدرستك لتبدأ التحضير للامتحان.',
+                buttonLabel: 'اكتشف تطبيق المترشح',
                 buttonIcon: Icons.android_rounded,
                 isPrimary: false,
                 onTap: onTraineeTap,
@@ -408,7 +327,7 @@ class _HeroSection extends StatelessWidget {
                 icon: Icons.business_center_rounded,
                 title: 'مدرسة سياقة',
                 description:
-                    'سجّل مدرستك مجاناً عبر Google، اشترِ أكواد التفعيل بالجملة بأسعار تفضيلية، ووزّعها وتتبّع استعمالها من لوحة تحكم واحدة.',
+                    'سجّل مدرستك مجاناً عبر Google، اشترِ أكواد التفعيل بالجملة بأسعار تفضيلية، ووزّعها وتتبّع استعمالها.',
                 buttonLabel: 'سجّل مدرستك عبر Google',
                 buttonIcon: Icons.login_rounded,
                 isPrimary: true,
@@ -433,7 +352,6 @@ class _HeroSection extends StatelessWidget {
   }
 }
 
-/// بطاقة مسار (مترشح أو مدرسة) في قسم البطل.
 class _PathCard extends StatelessWidget {
   final IconData icon;
   final String title;
@@ -620,7 +538,7 @@ class _StatItem extends StatelessWidget {
 }
 
 // ===========================================================================
-//  المسار الأول: مدرسة السياقة (بائع/موزّع الأكواد)
+//  المسار الوحيد المتبقي في صفحة الهبوط: مدرسة السياقة
 // ===========================================================================
 
 class _SchoolPathSection extends StatelessWidget {
@@ -637,12 +555,82 @@ class _SchoolPathSection extends StatelessWidget {
             eyebrow: 'مسار مدرسة السياقة',
             title: 'لوحة تحكم كاملة لبيع الأكواد وتتبع المترشحين',
             subtitle:
-                'سجّل مدرستك مجاناً عبر Google، واشترِ أكواد التفعيل بالجملة، ووزّعها على مترشحيك وتابع من فعّل كوده ومن لم يفعّله بعد.',
+                'سجّل مدرستك مجاناً عبر Google، واشترِ أكواد التفعيل بالجملة، ووزّعها على مترشحيك وتابع من فعّل كوده.',
           ),
         ),
         _FeaturesSection(),
         _HowItWorksSection(),
         _PartnershipCta(),
+      ],
+    );
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  final IconData icon;
+  final String eyebrow;
+  final String title;
+  final String subtitle;
+
+  const _SectionHeader({
+    required this.icon,
+    required this.eyebrow,
+    required this.title,
+    required this.subtitle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+          decoration: BoxDecoration(
+            color: colorScheme.primary.withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 16, color: colorScheme.primary),
+              const SizedBox(width: 8),
+              Text(
+                eyebrow,
+                style: TextStyle(
+                  color: colorScheme.primary,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 20),
+        Text(
+          title,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 30,
+            fontWeight: FontWeight.bold,
+            color: colorScheme.primary,
+          ),
+        ),
+        const SizedBox(height: 12),
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 640),
+          child: Text(
+            subtitle,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 16,
+              height: 1.6,
+              color: colorScheme.onSurface.withValues(alpha: 0.65),
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -1005,227 +993,6 @@ class _PartnershipCta extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-// ===========================================================================
-//  المسار الثاني: المترشح (طالب/مستخدم التطبيق)
-// ===========================================================================
-
-class _TraineePathSection extends StatelessWidget {
-  const _TraineePathSection();
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final isDark = theme.brightness == Brightness.dark;
-
-    return Container(
-      width: double.infinity,
-      color: isDark
-          ? colorScheme.primary.withValues(alpha: 0.08)
-          : colorScheme.primary.withValues(alpha: 0.04),
-      padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
-      child: Column(
-        children: const [
-          _SectionHeader(
-            icon: Icons.school_rounded,
-            eyebrow: 'مسار المترشح',
-            title: 'ابدأ تحضيرك للامتحان في دقيقة',
-            subtitle:
-                'حمّل تطبيق Virage مجاناً، وأدخل كود التفعيل الذي استلمته من مدرسة السياقة، واعثر على كل دروس الإشارات والأسئلة في تطبيق واحد يعمل بدون إنترنت.',
-          ),
-          SizedBox(height: 44),
-          _DownloadSection(),
-        ],
-      ),
-    );
-  }
-}
-
-/// قسم تحميل تطبيق المترشح (موجَّه للطلاب وليس المدارس).
-class _DownloadSection extends StatefulWidget {
-  const _DownloadSection();
-
-  @override
-  State<_DownloadSection> createState() => _DownloadSectionState();
-}
-
-class _DownloadSectionState extends State<_DownloadSection> {
-  static const String _endpoint = String.fromEnvironment(
-    'UPDATE_ENDPOINT',
-    defaultValue: 'https://virage.app/api/latest',
-  );
-
-  String? _versionName;
-  String? _downloadUrl;
-  bool _loading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadLatest();
-  }
-
-  Future<void> _loadLatest() async {
-    try {
-      final response = await http
-          .get(Uri.parse(_endpoint))
-          .timeout(const Duration(seconds: 8));
-      if (response.statusCode != 200) return;
-      final data = jsonDecode(response.body) as Map<String, dynamic>;
-      if (!mounted) return;
-      setState(() {
-        _versionName = data['versionName']?.toString();
-        _downloadUrl = data['url']?.toString();
-        _loading = false;
-      });
-    } catch (_) {
-      if (mounted) setState(() => _loading = false);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final primary = colorScheme.primary;
-
-    return Container(
-      constraints: const BoxConstraints(maxWidth: 620),
-      padding: const EdgeInsets.all(32),
-      decoration: BoxDecoration(
-        color: theme.cardColor,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: primary.withValues(alpha: 0.25)),
-      ),
-      child: Column(
-        children: [
-          Icon(Icons.android_rounded, size: 56, color: primary),
-          const SizedBox(height: 16),
-          Text(
-            _loading
-                ? 'جارٍ التحقق من آخر إصدار...'
-                : _versionName != null
-                ? 'الإصدار ${_versionName!}'
-                : 'التطبيق متوفر للهواتف الأندرويد فقط',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: colorScheme.onSurface,
-            ),
-          ),
-          const SizedBox(height: 24),
-          ElevatedButton.icon(
-            onPressed: (_downloadUrl == null)
-                ? null
-                : () => web.window.open(_downloadUrl!, '_blank'),
-            icon: const Icon(Icons.download_rounded),
-            label: const Text(
-              'تحميل التطبيق (APK)',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 16),
-              backgroundColor: primary,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-          ),
-          const SizedBox(height: 28),
-          const Divider(),
-          const SizedBox(height: 4),
-          // خطوات التفعيل للمترشح
-          const _StepLine(
-            number: '1',
-            text: 'حمّل ملف APK وافتحه من مجلد «التنزيلات» على هاتفك.',
-          ),
-          const SizedBox(height: 14),
-          const _StepLine(
-            number: '2',
-            text: 'اسمح بالتثبيت من «مصادر غير معروفة» عند طلبه من النظام.',
-          ),
-          const SizedBox(height: 14),
-          const _StepLine(
-            number: '3',
-            text: 'افتح التطبيق وأدخل كود التفعيل الذي استلمته من مدرستك.',
-          ),
-          const SizedBox(height: 20),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: primary.withValues(alpha: 0.08),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Row(
-              children: [
-                Icon(Icons.help_outline_rounded, size: 20, color: primary),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    'لا تملك كوداً بعد؟ اطلبه من مدرسة السياقة التي تسجّل فيها.',
-                    style: TextStyle(fontSize: 13, color: colorScheme.onSurface),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _StepLine extends StatelessWidget {
-  final String number;
-  final String text;
-
-  const _StepLine({required this.number, required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: 26,
-          height: 26,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: colorScheme.primary,
-            shape: BoxShape.circle,
-          ),
-          child: Text(
-            number,
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 13,
-            ),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 3),
-            child: Text(
-              text,
-              style: TextStyle(
-                fontSize: 14,
-                height: 1.5,
-                color: colorScheme.onSurface.withValues(alpha: 0.75),
-              ),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../pages/landing_page.dart';
+import '../pages/app_page.dart';
 import '../pages/dashboard_page.dart';
 import '../pages/contact_page.dart';
 import '../pages/profile_page.dart';
@@ -49,13 +50,14 @@ final GoRouter appRouter = GoRouter(
   ),
   redirect: (BuildContext context, GoRouterState state) {
     final session = Supabase.instance.client.auth.currentSession;
-    final isLoggingIn = state.uri.toString() == '/';
+    final path = state.uri.path;
+    final isPublicPage = path == '/' || path == '/app';
 
-    if (session == null && !isLoggingIn) {
+    if (session == null && !isPublicPage) {
       return '/';
     }
 
-    if (session != null && isLoggingIn) {
+    if (session != null && path == '/') {
       return '/dashboard';
     }
 
@@ -65,6 +67,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/',
       pageBuilder: (context, state) => _fadeSlidePage(const LandingPage()),
+    ),
+    GoRoute(
+      path: '/app',
+      pageBuilder: (context, state) => _fadeSlidePage(const AppPage()),
     ),
     ShellRoute(
       builder: (context, state, child) => AppShell(child: child),
