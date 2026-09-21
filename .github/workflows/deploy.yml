@@ -26,6 +26,7 @@ jobs:
       - run: flutter pub get
       - run: flutter build web --release --base-href=/virage_web/ --dart-define=UPDATE_ENDPOINT=https://virage-backend.onrender.com/api/latest
       - run: cp build/web/index.html build/web/404.html
+      - run: cp -r apk build/web/apk
       - uses: actions/upload-pages-artifact@v3
         with:
           path: build/web
