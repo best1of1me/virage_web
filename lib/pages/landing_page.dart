@@ -120,9 +120,14 @@ class _NavBar extends StatelessWidget {
                     color: colorScheme.primary.withValues(alpha: 0.25),
                   ),
                 ),
-                child: Image.asset(
-                  'assets/images/logo.png',
-                  fit: BoxFit.contain,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.asset(
+                    'assets/images/logo.png',
+                    fit: BoxFit.contain,
+                    width: double.infinity,
+                    height: double.infinity,
+                  ),
                 ),
               ),
               const SizedBox(width: 12),
@@ -261,9 +266,13 @@ class _HeroSection extends StatelessWidget {
                 ),
               ],
             ),
-            child: Image.asset(
-              'assets/images/logo.png',
-              fit: BoxFit.contain,
+            child: ClipOval(
+              child: Image.asset(
+                'assets/images/logo.png',
+                fit: BoxFit.contain,
+                width: double.infinity,
+                height: double.infinity,
+              ),
             ),
           ),
           const SizedBox(height: 28),
