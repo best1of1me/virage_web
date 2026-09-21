@@ -417,37 +417,37 @@ class _AppScreenshot {
 
 const List<_AppScreenshot> _screens = [
   _AppScreenshot(
-    path: 'assets/screenshots/01_learn_signs.png',
+    path: 'assets/screenshots/01_learn_signs.jpg',
     title: 'تعلّم الإشارات',
     description:
         'موسوعة مصوّرة لأكثر من 100 إشارة مرورية، مع شرح مفصّل لكل إشارة واختبارات مخصصة لكل قسم.',
   ),
   _AppScreenshot(
-    path: 'assets/screenshots/02_priorities.png',
+    path: 'assets/screenshots/02_priorities.jpg',
     title: 'أولويات المرور',
     description:
         'محاكي تقاطعات تفاعلي: رتّب أسبقية العبور في الحالات المعقدة بسحب وإفلات ممتع.',
   ),
   _AppScreenshot(
-    path: 'assets/screenshots/03_oral.png',
+    path: 'assets/screenshots/03_oral.jpg',
     title: 'الأسئلة الشفهية',
     description:
         '50 سؤالاً مقسّماً على 5 سلاسل مطابقة لامتحان السياقة الشفهي، مع التصحيح والشرح.',
   ),
   _AppScreenshot(
-    path: 'assets/screenshots/04_theory.png',
+    path: 'assets/screenshots/04_theory.jpg',
     title: 'الأسئلة النظرية',
     description:
         '31 سؤالاً نظرياً شاملاً مع الإجابة الصحيحة وشرح وافٍ لكل سؤال.',
   ),
   _AppScreenshot(
-    path: 'assets/screenshots/05_rewards.png',
+    path: 'assets/screenshots/05_rewards.jpg',
     title: 'المكافآت والنقاط',
     description:
         'اكسب النقاط يومياً وعند الإجابة الصحيحة لتفتح بها السلاسل والمستويات الجديدة.',
   ),
   _AppScreenshot(
-    path: 'assets/screenshots/06_home.png',
+    path: 'assets/screenshots/06_home.jpg',
     title: 'لوحة المتابعة',
     description:
         'تابع تقدمك ونتائج اختباراتك ونقاطك في مكان واحد بسيط وأنيق.',
