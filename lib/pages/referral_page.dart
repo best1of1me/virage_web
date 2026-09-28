@@ -16,6 +16,17 @@ class _ReferralPageState extends State<ReferralPage> {
   final _supabase = Supabase.instance.client;
   final _codeController = TextEditingController();
 
+  /// يعيد أول صف من استجابة RPC (قائمة أو خريطة) بشكل موحّد.
+  Map<String, dynamic>? _firstRow(dynamic res) {
+    if (res is List && res.isNotEmpty && res.first is Map) {
+      return Map<String, dynamic>.from(res.first as Map);
+    }
+    if (res is Map && res.isNotEmpty) {
+      return Map<String, dynamic>.from(res);
+    }
+    return null;
+  }
+
   bool _isLoading = true;
   bool _isSubmittingCode = false;
   bool _hasLoadError = false;
@@ -80,15 +91,14 @@ class _ReferralPageState extends State<ReferralPage> {
 
         // جلب اسم المدرسة التي قامت بإحالته (إن وجد)
         if (_referredBy != null && _referredBy!.isNotEmpty) {
-          final referrerRes = await _supabase
-              .from('profiles')
-              .select('school_name, full_name')
-              .eq('id', _referredBy!)
-              .maybeSingle();
-          if (referrerRes != null) {
+          final referrerRow = _firstRow(
+            await _supabase
+                .rpc('get_referrer_profile', params: {'ref_id': _referredBy}),
+          );
+          if (referrerRow != null) {
             _referrerSchoolName =
-                referrerRes['school_name'] ??
-                referrerRes['full_name'] ??
+                referrerRow['school_name'] ??
+                referrerRow['full_name'] ??
                 'مدرسة شريكة';
           }
         }
@@ -101,16 +111,11 @@ class _ReferralPageState extends State<ReferralPage> {
       }
 
       // جلب الإحالات الناجحة التي قام بها هذا المستخدم
-      final referralsRes = await _supabase
-          .from('referrals')
-          .select(
-            'id, reward_granted, created_at, referred:profiles!referee_id(school_name, full_name, avatar_url)',
-          )
-          .eq('referrer_id', userId)
-          .order('created_at', ascending: false);
+      final referralsRes = await _supabase.rpc('get_my_referrals');
 
-      final List<Map<String, dynamic>> loadedList =
-          List<Map<String, dynamic>>.from(referralsRes);
+      final List<Map<String, dynamic>> loadedList = referralsRes is List
+          ? List<Map<String, dynamic>>.from(referralsRes)
+          : const [];
 
       setState(() {
         _myReferralsList = loadedList;
@@ -167,14 +172,13 @@ class _ReferralPageState extends State<ReferralPage> {
       final userId = _supabase.auth.currentUser?.id;
       if (userId == null) return;
 
-      // 3. البحث عن صاحب الكود بـ referral_code
-      final referrerProfile = await _supabase
-          .from('profiles')
-          .select('id, school_name, full_name')
-          .eq('referral_code', codeInput)
-          .maybeSingle();
+      // 3. البحث عن صاحب الكود بـ referral_code (عبر دالة آمنة لا تكشف بقية الحقول)
+      final referrerRow = _firstRow(
+        await _supabase
+            .rpc('get_profile_by_referral', params: {'code': codeInput}),
+      );
 
-      if (referrerProfile == null) {
+      if (referrerRow == null) {
         if (mounted) {
           AppSnackbar.error(
             context,
@@ -184,10 +188,10 @@ class _ReferralPageState extends State<ReferralPage> {
         return;
       }
 
-      final referrerId = referrerProfile['id'] as String;
+      final referrerId = referrerRow['ref_id'] as String;
       final referrerName =
-          referrerProfile['school_name'] ??
-          referrerProfile['full_name'] ??
+          referrerRow['school_name'] ??
+          referrerRow['full_name'] ??
           'مدرسة شريكة';
 
       // 4. فحص صرامة: التأكد من عدم تطابق معرف المستخدم مع صاحب الكود
@@ -1104,11 +1108,11 @@ class _ReferralPageState extends State<ReferralPage> {
         separatorBuilder: (context, index) => const Divider(height: 1),
         itemBuilder: (context, index) {
           final item = _myReferralsList[index];
-          final referredProfile = item['referred'] as Map<String, dynamic>?;
           final schoolName =
-              referredProfile?['school_name'] ??
-              referredProfile?['full_name'] ??
-              'مدرسة شريكة';
+              (item['school_name'] ??
+                      item['full_name'] ??
+                      'مدرسة شريكة')
+                  .toString();
           final bool rewardGranted = item['reward_granted'] ?? false;
           final createdAt = item['created_at'] != null
               ? DateTime.tryParse(item['created_at'].toString())
