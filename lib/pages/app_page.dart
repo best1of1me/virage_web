@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:web/web.dart' as web;
 import '../responsive_layout.dart';
 import '../constants/app_info.dart';
+import '../widgets/reviews_section.dart';
 
 /// صفحة عامة (بدون تسجيل دخول) مخصصة للمترشحين لعرض تطبيق الهاتف.
 class AppPage extends StatefulWidget {
@@ -68,6 +69,7 @@ class _AppPageState extends State<AppPage> {
             const _AppFeaturesSection(),
             const _ScreenshotsSection(),
             const _ActivationStepsSection(),
+            const ReviewsSection(),
             _AppCtaSection(
               loading: _loading,
               versionName: _versionName,
