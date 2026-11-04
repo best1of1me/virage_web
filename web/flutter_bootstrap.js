@@ -12,15 +12,19 @@
   function hideLoader() {
     if (hidden || !loader) return;
     hidden = true;
-    // Wait two frames so the first Flutter frame is on screen behind the loader.
-    requestAnimationFrame(function () {
-      requestAnimationFrame(function () {
-        loader.classList.add('is-hidden');
-        setTimeout(function () {
-          if (loader.parentNode) loader.parentNode.removeChild(loader);
-        }, 400);
-      });
-    });
+    // A short delay lets the first Flutter frame paint behind the loader.
+    // setTimeout (not requestAnimationFrame) so it still runs in a background tab.
+    setTimeout(function () {
+      loader.classList.add('is-hidden');
+      try {
+        performance.mark('virage:app-visible');
+      } catch (e) {
+        /* ignore */
+      }
+      setTimeout(function () {
+        if (loader.parentNode) loader.parentNode.removeChild(loader);
+      }, 400);
+    }, 80);
   }
 
   function showFailure() {
