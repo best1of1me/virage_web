@@ -84,7 +84,7 @@ class VirageApp extends StatelessWidget {
       valueListenable: themeNotifier,
       builder: (context, currentMode, child) {
         return MaterialApp.router(
-          title: 'فيراج | تحضير امتحان رخصة السياقة',
+          title: 'VIRAGE | تحضير امتحان رخصة السياقة',
           debugShowCheckedModeBanner: false,
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
