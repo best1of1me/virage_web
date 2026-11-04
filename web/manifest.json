@@ -1,11 +1,13 @@
 {
-    "name": "virage_web",
-    "short_name": "virage_web",
+    "name": "فيراج - VIRAGE",
+    "short_name": "فيراج",
+    "lang": "ar",
+    "dir": "rtl",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#0F4C81",
+    "theme_color": "#0F4C81",
+    "description": "تطبيق جزائري لتحضير امتحان رخصة السياقة: الأسئلة النظرية، الإشارات المرورية، الأسئلة الشفهية والثقافة المرورية.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

@@ -1,50 +1,169 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar" dir="rtl">
 
 <head>
-  <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
-
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
-
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
   <base href="$FLUTTER_BASE_HREF">
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0F4C81">
+
+  <title>فيراج | تحضير امتحان رخصة السياقة في الجزائر</title>
+  <meta name="description"
+    content="فيراج (VIRAGE): تطبيق جزائري لتحضير امتحان رخصة السياقة — أسئلة الامتحان النظري، الإشارات المرورية، الأسئلة الشفهية، والثقافة المرورية. تدرّب وحمّل التطبيق مجاناً.">
+  <meta name="keywords" content="رخصة السياقة, امتحان السياقة, فيراج, VIRAGE, الإشارات المرورية, الأسئلة الشفهية, الجزائر">
+  <link rel="canonical" href="https://best1of1me.github.io/virage_web/">
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="فيراج - VIRAGE">
+  <meta property="og:locale" content="ar_DZ">
+  <meta property="og:title" content="فيراج | تحضير امتحان رخصة السياقة في الجزائر">
+  <meta property="og:description"
+    content="أسئلة الامتحان النظري، الإشارات المرورية، الأسئلة الشفهية والثقافة المرورية — كل ما تحتاجه للنجاح في امتحان رخصة السياقة.">
+  <meta property="og:url" content="https://best1of1me.github.io/virage_web/">
+  <meta property="og:image" content="https://best1of1me.github.io/virage_web/icons/Icon-512.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="فيراج | تحضير امتحان رخصة السياقة في الجزائر">
+  <meta name="twitter:description"
+    content="أسئلة الامتحان النظري، الإشارات المرورية، الأسئلة الشفهية والثقافة المرورية — كل ما تحتاجه للنجاح.">
+  <meta name="twitter:image" content="https://best1of1me.github.io/virage_web/icons/Icon-512.png">
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="virage_web">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="فيراج">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png" />
 
-  <title>virage_web</title>
   <link rel="manifest" href="manifest.json">
+
+  <!-- Speed up the CanvasKit download from gstatic -->
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="https://www.gstatic.com">
+  <!-- CanvasKit fetches fallback fonts (Arabic/Latin) from fonts.gstatic.com -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Start the app bundle download in parallel with flutter_bootstrap.js -->
+  <link rel="preload" href="main.dart.js" as="script">
+
+  <style>
+    :root {
+      --brand: #0F4C81;
+      --brand-2: #1E88E5;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #F4F6F8;
+      font-family: "Segoe UI", "Noto Kufi Arabic", "Cairo", Tahoma, Arial, sans-serif;
+    }
+
+    #boot-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 2147483647;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      background: linear-gradient(160deg, var(--brand) 0%, #0B3A63 55%, var(--brand-2) 100%);
+      color: #fff;
+      transition: opacity .35s ease;
+      overscroll-behavior: none;
+      text-align: center;
+      padding: 24px;
+      box-sizing: border-box;
+    }
+
+    #boot-loader.is-hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .boot-mark {
+      font-size: clamp(34px, 11vw, 56px);
+      font-weight: 800;
+      letter-spacing: .22em;
+      margin-inline-start: .22em;
+      line-height: 1;
+    }
+
+    .boot-mark span {
+      color: #8FD3FF;
+    }
+
+    .boot-sub {
+      font-size: 15px;
+      opacity: .92;
+      margin: 0;
+      max-width: 22em;
+      line-height: 1.7;
+    }
+
+    .boot-ring {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 3px solid rgba(255, 255, 255, .25);
+      border-top-color: #fff;
+      animation: boot-spin 900ms linear infinite;
+    }
+
+    @keyframes boot-spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    #boot-failure {
+      display: none;
+      font-size: 14px;
+      line-height: 1.9;
+      background: rgba(0, 0, 0, .22);
+      padding: 14px 18px;
+      border-radius: 14px;
+      max-width: 26em;
+    }
+
+    #boot-failure a {
+      color: #FFE9A8;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .boot-ring {
+        animation-duration: 3s;
+      }
+    }
+  </style>
 </head>
 
 <body>
-  <!--
-    You can customize the "flutter_bootstrap.js" script.
-    This is useful to provide a custom configuration to the Flutter loader
-    or to give the user feedback during the initialization process.
+  <div id="boot-loader" role="status" aria-live="polite">
+    <div class="boot-mark">VIR<span>A</span>GE</div>
+    <div class="boot-ring"></div>
+    <p class="boot-sub">جارٍ تجهيز التطبيق… لحظات من فضلك</p>
+    <div id="boot-failure">
+      تعذّر تحميل التطبيق. تحقّق من اتصالك بالإنترنت ثم
+      <a href="./">أعد المحاولة</a>.
+    </div>
+  </div>
 
-    For more details:
-    * https://docs.flutter.dev/platform-integration/web/initialization
-  -->
+  <noscript>
+    <div style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+                background:#0F4C81;color:#fff;font-family:Tahoma,Arial,sans-serif;
+                text-align:center;padding:24px;line-height:1.8">
+      يحتاج موقع فيراج إلى تفعيل JavaScript للعمل. يُرجى تفعيله في المتصفح ثم إعادة تحميل الصفحة.
+    </div>
+  </noscript>
+
   <script src="flutter_bootstrap.js" async></script>
-  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@2.12.313/build/pdf.js"></script>
 </body>
 
 </html>
