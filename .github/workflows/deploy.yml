@@ -24,12 +24,30 @@ jobs:
           channel: stable
           cache: true
       - run: flutter pub get
-      - run: flutter build web --release --pwa-strategy=none --base-href=/virage_web/ --dart-define=UPDATE_ENDPOINT=https://virage-backend.onrender.com/api/latest
-      - run: cp build/web/index.html build/web/404.html
-      - run: cp -r apk build/web/apk
+
+      # The Flutter app lives under /app/ so that the fast static landing page can
+      # own the site root. Hash routing keeps every in-app route server-free.
+      - run: >-
+          flutter build web --release --pwa-strategy=none
+          --base-href=/virage_web/app/
+          --output=${{ github.workspace }}/build/appweb
+          --dart-define=UPDATE_ENDPOINT=https://virage-backend.onrender.com/api/latest
+
+      - name: Assemble static site
+        run: |
+          mkdir -p build/site/assets
+          cp -r build/appweb build/site/app
+          cp site/index.html build/site/index.html
+          cp site/index.html build/site/404.html
+          cp assets/images/logo.png build/site/assets/logo.png
+          cp web/icons/Icon-192.png build/site/assets/icon-192.png
+          cp web/favicon.png build/site/assets/favicon.png
+          cp assets/screenshots/*.jpg build/site/assets/
+          cp -r apk build/site/apk
+
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: build/web
+          path: build/site
 
   deploy:
     environment:
