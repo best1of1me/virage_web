@@ -9,6 +9,10 @@
 const SUPABASE_URL = "https://gwafzhdtrqvwakawjmwm.supabase.co";
 const SUPABASE_KEY = "sb_publishable_gomM_R_xF7mG4hHuFblFmQ_RG6ZXSB-";
 const SUPABASE_CDN = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+const SUPABASE_CDNS = [
+  SUPABASE_CDN,
+  "https://esm.sh/@supabase/supabase-js@2",
+];
 const CHECKOUT_API = "https://virage-backend.onrender.com/api/create-checkout";
 const NOMINATIM = "https://nominatim.openstreetmap.org";
 
@@ -2312,9 +2316,21 @@ function renderFatal(message) {
     </div>`;
 }
 
+/** تحميل مكتبة Supabase: نجرّب مصدرين حتى لا يتوقف الدخول إذا تعطّل أحدهما. */
+async function loadSupabase() {
+  let lastError = null;
+  for (const url of SUPABASE_CDNS) {
+    try {
+      return await import(url);
+    } catch (error) {
+      lastError = error;
+    }
+  }
+  throw lastError ?? new Error("supabase-js load failed");
+}
+
 async function init() {
   applyTheme(getThemeMode());
-
   const media = window.matchMedia?.("(prefers-color-scheme: dark)");
   media?.addEventListener?.("change", () => {
     if (getThemeMode() === "system") applyTheme("system");
@@ -2324,7 +2340,7 @@ async function init() {
     if (DEMO) {
       state.supabase = createDemoClient();
     } else {
-      const { createClient } = await import(SUPABASE_CDN);
+      const { createClient } = await loadSupabase();
       state.supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
         auth: {
           persistSession: true,
