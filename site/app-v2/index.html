@@ -14,6 +14,18 @@
     <link rel="icon" href="../assets/logo.png" />
     <link rel="preload" href="../assets/logo.png" as="image" />
     <link rel="stylesheet" href="app.css" />
+    <!-- يطبّق الثيم المحفوظ قبل أول رسم حتى لا يظهر وميض الوضع الفاتح لمستخدمي الوضع الداكن -->
+    <script>
+      (() => {
+        try {
+          const m = localStorage.getItem("virage_theme_mode") || "system";
+          const dark =
+            m === "dark" ||
+            (m !== "light" && matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.dataset.theme = dark ? "dark" : "light";
+        } catch {}
+      })();
+    </script>
   </head>
   <body>
     <!-- شاشة إقلاع خفيفة: تُخفى بعد أول رسم فعلي -->
