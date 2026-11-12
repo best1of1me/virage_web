@@ -350,7 +350,7 @@ function renderLogin(errorMessage = "") {
     <div class="login">
       <div>
         <div class="login-card">
-          <img class="login-logo" src="../assets/logo.png" alt="شعار VIRAGE" width="76" height="76" />
+          <img class="login-logo" src="../assets/icon-192.png" alt="شعار VIRAGE" width="76" height="76" />
           <div class="login-brand">VIRAGE</div>
           <div class="login-sub">لوحة تحكم مدارس السياقة</div>
           <p class="login-copy">
@@ -420,7 +420,7 @@ function renderShell() {
     <div class="app" id="app-shell">
       <aside class="sidebar" id="sidebar" aria-label="التنقل">
         <div class="brand">
-          <img src="../assets/logo.png" alt="" width="40" height="40" />
+          <img src="../assets/icon-192.png" alt="" width="40" height="40" />
           <div>
             <div class="brand-name">VIRAGE</div>
             <div class="brand-sub">لوحة تحكم مدارس السياقة</div>
@@ -2304,7 +2304,7 @@ function renderFatal(message) {
   $("#root").innerHTML = `
     <div class="login">
       <div class="login-card">
-        <img class="login-logo" src="../assets/logo.png" alt="" width="76" height="76" />
+        <img class="login-logo" src="../assets/icon-192.png" alt="" width="76" height="76" />
         <div class="login-brand">VIRAGE</div>
         <p class="login-copy">${esc(message)}</p>
         <button class="btn btn-primary btn-block" onclick="location.reload()">إعادة المحاولة</button>
