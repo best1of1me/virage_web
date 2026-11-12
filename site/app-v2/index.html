@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#0F4C81" />
+    <title>VIRAGE | لوحة تحكم مدارس السياقة</title>
+    <meta
+      name="description"
+      content="لوحة تحكم مدارس السياقة في VIRAGE: إدارة أكواد التفعيل، متابعة المترشحين، الإحالات والتحليلات."
+    />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" href="../assets/logo.png" />
+    <link rel="preload" href="../assets/logo.png" as="image" />
+    <link rel="stylesheet" href="app.css" />
+  </head>
+  <body>
+    <!-- شاشة إقلاع خفيفة: تُخفى بعد أول رسم فعلي -->
+    <div id="boot" class="boot">
+      <img src="../assets/logo.png" alt="VIRAGE" width="64" height="64" />
+      <div class="boot-brand">VIRAGE</div>
+      <div class="boot-ring" aria-hidden="true"></div>
+      <p class="boot-text">جارٍ تحميل لوحة التحكم…</p>
+    </div>
+
+    <div id="root" aria-live="polite"></div>
+    <div id="toasts" class="toasts" aria-live="polite"></div>
+    <div id="modal-root"></div>
+
+    <noscript>
+      <div class="noscript">
+        تحتاج إلى تفعيل JavaScript في المتصفح لاستخدام لوحة التحكم.
+      </div>
+    </noscript>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>

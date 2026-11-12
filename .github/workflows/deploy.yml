@@ -37,6 +37,9 @@ jobs:
         run: |
           mkdir -p build/site/assets
           cp -r build/appweb build/site/app
+          # لوحة التحكم الجديدة (HTML) — تُنشر بجانب Flutter في /app-v2/
+          # حتى تُختبر بحساب حقيقي قبل التبديل النهائي إلى /app/
+          cp -r site/app-v2 build/site/app-v2
           cp site/index.html build/site/index.html
           cp site/index.html build/site/404.html
           # يلغي عامل الخدمة القديم الذي كان يخزّن نسخة Flutter الثقيلة
