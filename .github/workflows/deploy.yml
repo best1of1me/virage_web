@@ -39,6 +39,9 @@ jobs:
           cp -r build/appweb build/site/app
           cp site/index.html build/site/index.html
           cp site/index.html build/site/404.html
+          # يلغي عامل الخدمة القديم الذي كان يخزّن نسخة Flutter الثقيلة
+          cp site/flutter_service_worker.js build/site/flutter_service_worker.js
+          cp site/flutter_service_worker.js build/site/app/flutter_service_worker.js
           cp assets/images/logo.png build/site/assets/logo.png
           cp web/icons/Icon-192.png build/site/assets/icon-192.png
           cp web/favicon.png build/site/assets/favicon.png
