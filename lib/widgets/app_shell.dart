@@ -104,7 +104,7 @@ class AppShell extends StatelessWidget {
     if (confirm == true && context.mounted) {
       await Supabase.instance.client.auth.signOut();
       if (context.mounted) {
-        context.go('/');
+        context.go('/login');
       }
     }
   }

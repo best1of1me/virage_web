@@ -2,8 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../pages/landing_page.dart';
-import '../pages/app_page.dart';
+import '../pages/login_page.dart';
 import '../pages/dashboard_page.dart';
 import '../pages/contact_page.dart';
 import '../pages/profile_page.dart';
@@ -43,7 +42,7 @@ Page<T> _fadeSlidePage<T>(Widget child) {
 
 final GoRouter appRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
-  initialLocation: '/',
+  initialLocation: '/dashboard',
   errorBuilder: (context, state) => const NotFoundPage(),
   refreshListenable: GoRouterRefreshStream(
     Supabase.instance.client.auth.onAuthStateChange,
@@ -51,13 +50,18 @@ final GoRouter appRouter = GoRouter(
   redirect: (BuildContext context, GoRouterState state) {
     final session = Supabase.instance.client.auth.currentSession;
     final path = state.uri.path;
-    final isPublicPage = path == '/' || path == '/app';
 
-    if (session == null && !isPublicPage) {
-      return '/';
+    // الصفحة التسويقية أصبحت خارج التطبيق (site/index.html)، لذلك كل ما
+    // يشير إلى الجذر أو إلى /app داخل هذا التطبيق يُحوَّل إلى لوحة التحكم.
+    if (path == '/' || path == '/app') {
+      return session == null ? '/login' : '/dashboard';
     }
 
-    if (session != null && path == '/') {
+    if (session == null && path != '/login') {
+      return '/login';
+    }
+
+    if (session != null && path == '/login') {
       return '/dashboard';
     }
 
@@ -65,12 +69,8 @@ final GoRouter appRouter = GoRouter(
   },
   routes: [
     GoRoute(
-      path: '/',
-      pageBuilder: (context, state) => _fadeSlidePage(const LandingPage()),
-    ),
-    GoRoute(
-      path: '/app',
-      pageBuilder: (context, state) => _fadeSlidePage(const AppPage()),
+      path: '/login',
+      pageBuilder: (context, state) => _fadeSlidePage(const LoginPage()),
     ),
     ShellRoute(
       builder: (context, state, child) => AppShell(child: child),

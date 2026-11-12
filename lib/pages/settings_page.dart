@@ -113,7 +113,7 @@ class _SettingsPageState extends State<SettingsPage> {
       } catch (_) {
         // تجاهل فشل تسجيل الخروج هنا — الموجّه سيعيد التوجيه في كل الأحوال
       }
-      if (mounted) context.go('/');
+      if (mounted) context.go('/login');
     }
   }
 
